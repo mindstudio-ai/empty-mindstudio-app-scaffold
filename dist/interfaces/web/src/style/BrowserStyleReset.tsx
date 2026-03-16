@@ -14,13 +14,13 @@ export default createGlobalStyle`
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: none;
     touch-action: manipulation;
-    background: #fafaf8;
+    background: #000000;
     overflow-x: hidden;
   }
 
   body, textarea, input, button, select {
-    font-family: "DM Sans", system-ui, -apple-system, sans-serif;
-    color: #1a1a1a;
+    font-family: -apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+    color: #f5f5f7;
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -56,6 +56,6 @@ export default createGlobalStyle`
   }
 
   ::selection {
-    background: rgba(45, 90, 61, 0.15);
+    background: rgba(255, 255, 255, 0.15);
   }
 `;

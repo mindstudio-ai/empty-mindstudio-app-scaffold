@@ -6,22 +6,26 @@ version: 1
 
 # Hello World
 
-A minimal MindStudio app. Takes a name, generates a creative greeting using AI, and saves it. Demonstrates the full app lifecycle (spec, method, table, web interface) without unnecessary complexity.
+A simple app that greets people. The user enters their name, the app generates a creative, personalized greeting using AI, and saves it so they can see all their past greetings.
 
 ~~~
 Intentionally simple: no authentication, no roles, no pagination, single interface (web only). This is the default scaffold for new projects.
 ~~~
 
-## Data Model
+## Data
 
-One table: `greetings` with two columns: `name` (string) and `greeting` (string).
-
-## Hello World Method
-
-Takes `{ name: string }`, generates a creative one-sentence greeting using AI, stores it in the greetings table, and returns the result.
+The app remembers every greeting it generates, along with who it was for.
 
 ~~~
-The AI prompt should ask for a single warm, creative greeting. The response is stored as-is. Use a fast, cheap text model — this is a lightweight creative task.
+One table. Columns: the person's name (string) and the generated greeting text (string). System columns (id, timestamps) are automatic.
 ~~~
 
-Error messages should be friendly and non-technical. Never expose API errors or stack traces.
+## Greeting
+
+When someone asks for a greeting, the app uses AI to write a single warm, creative sentence for them, saves it, and shows it right away.
+
+~~~
+The AI prompt should ask for exactly one sentence — warm, creative, personalized to the name. The response is stored as-is. Use a fast, cheap text model — this is a lightweight creative task.
+~~~
+
+Error messages should be friendly and human. Never show technical details to the user.

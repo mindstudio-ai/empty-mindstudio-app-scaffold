@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from './api';
 
@@ -9,73 +9,110 @@ interface Greeting {
   greeting: string;
 }
 
+// ---------------------------------------------------------------------------
+// Animations
+// ---------------------------------------------------------------------------
+
+const pulse = keyframes`
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+`;
+
+// ---------------------------------------------------------------------------
+// Layout
+// ---------------------------------------------------------------------------
+
 const Page = styled.div`
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 64px 24px 48px;
+  background: #000000;
+`;
+
+const Content = styled.div`
+  width: 100%;
+  max-width: 480px;
+  padding: 120px 24px 48px;
 
   @media (max-width: 480px) {
-    padding: 32px 16px 32px;
+    padding: 72px 20px 32px;
   }
 `;
 
-const Container = styled.div`
-  width: 100%;
-  max-width: 480px;
+// ---------------------------------------------------------------------------
+// Header
+// ---------------------------------------------------------------------------
+
+const Header = styled.div`
+  text-align: center;
+  margin-bottom: 48px;
 `;
 
 const Title = styled.h1`
-  font-size: 28px;
-  font-weight: 500;
-  text-align: center;
-  margin-bottom: 32px;
-  color: #1a1a1a;
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: #f5f5f7;
+  line-height: 1.1;
+
+  @media (max-width: 480px) {
+    font-size: 32px;
+  }
 `;
 
-const InputRow = styled.div`
+const Subtitle = styled.p`
+  font-size: 17px;
+  color: #86868b;
+  margin-top: 12px;
+  font-weight: 400;
+`;
+
+// ---------------------------------------------------------------------------
+// Input
+// ---------------------------------------------------------------------------
+
+const InputArea = styled.div`
   display: flex;
-  gap: 12px;
-  margin-bottom: 48px;
+  gap: 10px;
+  margin-bottom: 56px;
 `;
 
 const NameInput = styled.input`
   flex: 1;
-  padding: 14px 16px;
-  font-size: 16px;
-  background: #ffffff;
-  border: 1px solid rgba(26, 26, 26, 0.12);
-  border-radius: 12px;
-  transition: border-color 0.15s;
+  padding: 16px 20px;
+  font-size: 17px;
+  color: #f5f5f7;
+  background: #1c1c1e;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  transition: border-color 0.2s;
 
   &:focus {
-    border-color: rgba(26, 26, 26, 0.3);
+    border-color: #3a3a3c;
   }
 
   &::placeholder {
-    color: rgba(26, 26, 26, 0.3);
+    color: #48484a;
   }
 
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
   }
 `;
 
 const SubmitButton = styled.button<{ $loading?: boolean }>`
-  padding: 14px 24px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #ffffff;
-  background: ${(p) => (p.$loading ? '#4a7a5a' : '#2d5a3d')};
-  border-radius: 12px;
+  padding: 16px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  color: ${(p) => (p.$loading ? 'rgba(0, 0, 0, 0.6)' : '#000000')};
+  background: ${(p) => (p.$loading ? '#86868b' : '#f5f5f7')};
+  border-radius: 14px;
   white-space: nowrap;
-  transition:
-    background 0.15s,
-    transform 0.1s;
+  transition: all 0.15s;
 
   &:hover:not(:disabled) {
-    background: #234a31;
+    background: #ffffff;
   }
 
   &:active:not(:disabled) {
@@ -84,52 +121,86 @@ const SubmitButton = styled.button<{ $loading?: boolean }>`
 
   &:disabled {
     cursor: default;
+    opacity: ${(p) => (p.$loading ? 0.8 : 0.2)};
   }
 `;
+
+// ---------------------------------------------------------------------------
+// Cards
+// ---------------------------------------------------------------------------
 
 const ListSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1px;
+  background: #1c1c1e;
+  border-radius: 16px;
+  overflow: hidden;
 `;
 
 const Card = styled(motion.div)`
-  padding: 20px;
-  background: #ffffff;
-  border: 1px solid rgba(26, 26, 26, 0.06);
-  border-radius: 12px;
-  transition: box-shadow 0.15s;
-
-  &:hover {
-    box-shadow: 0 2px 8px rgba(26, 26, 26, 0.06);
-  }
+  padding: 20px 24px;
+  background: #1c1c1e;
 `;
 
 const CardGreeting = styled.p`
-  font-size: 18px;
+  font-size: 15px;
   line-height: 1.6;
-  color: #1a1a1a;
-  margin-bottom: 8px;
+  color: #f5f5f7;
 `;
 
 const CardName = styled.p`
   font-size: 13px;
   font-weight: 500;
-  color: rgba(26, 26, 26, 0.4);
+  color: #48484a;
+  margin-top: 8px;
 `;
 
-const EmptyState = styled.p`
-  text-align: center;
-  color: rgba(26, 26, 26, 0.3);
-  font-size: 15px;
-  padding: 48px 0;
+const Divider = styled.div`
+  height: 1px;
+  background: #2c2c2e;
+  margin: 0 24px;
 `;
+
+const StreamingDot = styled.span`
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: #86868b;
+  border-radius: 50%;
+  margin-left: 4px;
+  vertical-align: middle;
+  animation: ${pulse} 1.2s ease-in-out infinite;
+`;
+
+const EmptyState = styled.div`
+  text-align: center;
+  padding: 64px 0;
+  color: #48484a;
+  font-size: 15px;
+`;
+
+// ---------------------------------------------------------------------------
+// Variants
+// ---------------------------------------------------------------------------
 
 const cardVariants = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-  exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
+  initial: { opacity: 0, height: 0 },
+  animate: {
+    opacity: 1,
+    height: 'auto',
+    transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] },
+  },
+  exit: {
+    opacity: 0,
+    height: 0,
+    transition: { duration: 0.2 },
+  },
 };
+
+// ---------------------------------------------------------------------------
+// App
+// ---------------------------------------------------------------------------
 
 export default function App() {
   const [name, setName] = useState('');
@@ -144,17 +215,18 @@ export default function App() {
 
   const handleSubmit = async () => {
     const trimmed = name.trim();
-    if (!trimmed || loading) {
-      return;
-    }
+    if (!trimmed || loading) return;
 
     setLoading(true);
     setStreamText('');
     try {
-      const result = await api.helloWorld({ name: trimmed }, {
-        stream: true,
-        onToken: (text: string) => setStreamText(text),
-      });
+      const result = await api.helloWorld(
+        { name: trimmed },
+        {
+          stream: true,
+          onToken: (text: string) => setStreamText(text),
+        },
+      );
       setStreamText('');
       setGreetings((prev) => [result as Greeting, ...prev]);
       setName('');
@@ -166,23 +238,31 @@ export default function App() {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSubmit();
-    }
+    if (e.key === 'Enter') handleSubmit();
   };
+
+  const allItems = [
+    ...(loading && streamText
+      ? [{ id: '_stream', name: name.trim(), greeting: streamText, isStreaming: true }]
+      : []),
+    ...greetings.map((g) => ({ ...g, isStreaming: false })),
+  ];
 
   return (
     <Page>
-      <Container>
-        <Title>Hello World</Title>
+      <Content>
+        <Header>
+          <Title>Hello World</Title>
+          <Subtitle>AI-powered greetings</Subtitle>
+        </Header>
 
-        <InputRow>
+        <InputArea>
           <NameInput
             ref={inputRef}
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="What's your name?"
+            placeholder="Enter your name"
             disabled={loading}
           />
           <SubmitButton
@@ -192,42 +272,36 @@ export default function App() {
           >
             {loading ? 'Thinking...' : 'Say Hello'}
           </SubmitButton>
-        </InputRow>
+        </InputArea>
 
-        <ListSection>
-          <AnimatePresence mode="popLayout">
-            {loading && streamText && (
-              <Card
-                key="streaming"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 0.5, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                layout
-              >
-                <CardGreeting>{streamText}</CardGreeting>
-                <CardName>{name.trim()}</CardName>
-              </Card>
-            )}
-            {greetings.map((g) => (
-              <Card
-                key={g.id}
-                variants={cardVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                layout
-              >
-                <CardGreeting>{g.greeting}</CardGreeting>
-                <CardName>{g.name}</CardName>
-              </Card>
-            ))}
-          </AnimatePresence>
-
-          {!loading && greetings.length === 0 && (
-            <EmptyState>No greetings yet. Say hello to someone!</EmptyState>
-          )}
-        </ListSection>
-      </Container>
+        {allItems.length > 0 ? (
+          <ListSection>
+            <AnimatePresence mode="popLayout">
+              {allItems.map((item, i) => (
+                <motion.div
+                  key={item.id}
+                  variants={cardVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  layout
+                >
+                  {i > 0 && <Divider />}
+                  <Card>
+                    <CardGreeting>
+                      {item.greeting}
+                      {item.isStreaming && <StreamingDot />}
+                    </CardGreeting>
+                    <CardName>{item.name}</CardName>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </ListSection>
+        ) : (
+          <EmptyState>No greetings yet</EmptyState>
+        )}
+      </Content>
     </Page>
   );
 }

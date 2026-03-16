@@ -1,6 +1,6 @@
 ---
 name: Visual Identity
-description: Clean, warm, modern aesthetic for the Hello World starter.
+description: Minimal dark interface inspired by Apple and OpenAI design language.
 version: 1
 ---
 
@@ -8,38 +8,42 @@ version: 1
 
 ## Aesthetic
 
-Clean and inviting. A warm neutral palette with generous whitespace. The feel of a well-designed utility — calm, confident, modern. Nothing flashy, nothing competing for attention. The simplicity is the design.
+Pure black. Restrained, confident, typographic. The feel of apple.com or chatgpt.com — the design gets out of the way. No ornamentation, no gradients, no glow effects. Just strong hierarchy, precise spacing, and exceptional clarity.
 
 ## Color Palette
 
-| Token      | Value                      | Usage                     |
-| ---------- | -------------------------- | ------------------------- |
-| Background | `#fafaf8`                  | Page background           |
-| Text       | `#1a1a1a`                  | Primary text              |
-| Muted      | `rgba(26, 26, 26, 0.5)`   | Labels, secondary text    |
-| Dim        | `rgba(26, 26, 26, 0.3)`   | Placeholders, empty state |
-| Accent     | `#2d5a3d`                  | Button, active states     |
-| AccentHover| `#234a31`                  | Button hover              |
-| Surface    | `#ffffff`                  | Cards, input backgrounds  |
-| Border     | `rgba(26, 26, 26, 0.08)`  | Subtle dividers           |
+| Token      | Value                          | Usage                        |
+| ---------- | ------------------------------ | ---------------------------- |
+| Background | `#000000`                      | Page background              |
+| Surface    | `#1c1c1e`                      | Cards, inputs                |
+| Border     | `#2c2c2e`                      | Dividers                     |
+| BorderSub  | `#3a3a3c`                      | Input focus border           |
+| Text       | `#f5f5f7`                      | Primary text                 |
+| Secondary  | `#86868b`                      | Subtitles, secondary text    |
+| Tertiary   | `#48484a`                      | Placeholders, faint text     |
+
+No accent color. The white button on black is the primary action. Everything else is grayscale.
 
 ## Typography
 
-- **Primary font**: DM Sans (Google Fonts) — clean, geometric, friendly sans-serif. Load weights 400 and 500.
-- **Fallback**: system-ui, -apple-system, sans-serif
-- **Greeting text**: 20px, weight 400, line-height 1.6
-- **Input**: 16px, weight 400
-- **Labels & buttons**: 14px, weight 500
-- **Name in greeting card**: 13px, weight 500, muted
+- **Primary font**: SF Pro Display / system-ui — the system font stack. No external fonts needed.
+- **Heading**: 40px, weight 600, tight letter-spacing (-0.03em)
+- **Body**: 15-17px, weight 400
+- **Labels**: 13px, weight 500
+- **Button**: 15px, weight 600
+
+## Surfaces
+
+Cards use the elevated surface color (`#1c1c1e`) with no border or shadow. When grouped, cards are separated by 1px dividers (`#2c2c2e`) inside a single rounded container. Inputs match the card surface with a transparent border that appears on focus.
 
 ## Spacing
 
-Generous and consistent. 64px top padding on desktop, 32px on mobile. 24px between cards. 16px internal card padding. Everything aligns to an 8px grid.
+120px top padding on desktop, 72px on mobile. 48px below the header. 56px between input and content. Cards have 20px vertical, 24px horizontal padding. Everything feels spacious without being empty.
 
 ## Interaction
 
-- Cards have a subtle border and gentle shadow on hover
-- Button is solid accent color, rounded, clear and tappable
-- Input has a subtle border that darkens on focus
-- New greetings animate in with a gentle fade and slide
-- Loading state shows a subtle pulse, not a spinner
+- White button inverts on hover (brighter white)
+- Subtle scale on press (0.97)
+- Cards animate in with height reveal, not slide
+- Streaming text shows a small pulsing dot at the end
+- No hover states on cards — the list is for reading, not clicking
