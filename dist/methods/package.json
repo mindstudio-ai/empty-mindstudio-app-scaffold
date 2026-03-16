@@ -8,7 +8,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@mindstudio-ai/agent": "^0.1.14"
+    "@mindstudio-ai/agent": "^0.1.15"
   },
   "devDependencies": {
     "prettier": "^3.5.0",
