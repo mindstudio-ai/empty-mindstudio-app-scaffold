@@ -3,6 +3,7 @@ name: Typography
 type: design/typography
 ---
 
+```typography
 fonts:
   System:
     src: system-ui
@@ -33,3 +34,4 @@ styles:
     weight: 600
     lineHeight: 1
     description: Button text
+```

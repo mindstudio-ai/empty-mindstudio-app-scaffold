@@ -3,6 +3,7 @@ name: Colors
 type: design/color
 ---
 
+```colors
 Background:
   value: "#000000"
   description: Page background
@@ -24,3 +25,4 @@ Secondary:
 Tertiary:
   value: "#48484A"
   description: Placeholders, faint text
+```
