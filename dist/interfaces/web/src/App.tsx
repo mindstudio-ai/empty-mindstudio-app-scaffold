@@ -1,12 +1,61 @@
-import { useState, useEffect, useRef } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import useSWR, { mutate } from 'swr';
 import api from './api';
 
 interface Greeting {
   id: string;
   name: string;
   greeting: string;
+}
+
+// ---------------------------------------------------------------------------
+// Data fetching with SWR
+// ---------------------------------------------------------------------------
+
+/** Local greeting cache key. SWR manages the state; the fetcher seeds it. */
+const GREETINGS_KEY = 'greetings';
+
+function useGreetings() {
+  return useSWR<Greeting[]>(GREETINGS_KEY, null, {
+    fallbackData: [],
+    revalidateOnFocus: false,
+  });
+}
+
+function useCreateGreeting() {
+  const [streamText, setStreamText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const trigger = useCallback(async (name: string) => {
+    setIsLoading(true);
+    setStreamText('');
+    try {
+      const result = (await api.helloWorld(
+        { name },
+        {
+          stream: true,
+          onToken: (text: string) => setStreamText(text),
+        },
+      )) as Greeting;
+
+      // Optimistic update: prepend new greeting to the cached list
+      await mutate<Greeting[]>(
+        GREETINGS_KEY,
+        (prev) => [result, ...(prev ?? [])],
+        { revalidate: false },
+      );
+
+      setStreamText('');
+      return result;
+    } finally {
+      setIsLoading(false);
+      setStreamText('');
+    }
+  }, []);
+
+  return { trigger, streamText, isLoading };
 }
 
 // ---------------------------------------------------------------------------
@@ -204,36 +253,16 @@ const cardVariants = {
 
 export default function App() {
   const [name, setName] = useState('');
-  const [greetings, setGreetings] = useState<Greeting[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [streamText, setStreamText] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+  const { data: greetings = [] } = useGreetings();
+  const { trigger, streamText, isLoading } = useCreateGreeting();
 
   const handleSubmit = async () => {
     const trimmed = name.trim();
-    if (!trimmed || loading) return;
+    if (!trimmed || isLoading) return;
 
-    setLoading(true);
-    setStreamText('');
-    try {
-      const result = await api.helloWorld(
-        { name: trimmed },
-        {
-          stream: true,
-          onToken: (text: string) => setStreamText(text),
-        },
-      );
-      setStreamText('');
-      setGreetings((prev) => [result as Greeting, ...prev]);
-      setName('');
-    } catch {
-      setStreamText('');
-    }
-    setLoading(false);
+    await trigger(trimmed);
+    setName('');
     inputRef.current?.focus();
   };
 
@@ -242,8 +271,15 @@ export default function App() {
   };
 
   const allItems = [
-    ...(loading && streamText
-      ? [{ id: '_stream', name: name.trim(), greeting: streamText, isStreaming: true }]
+    ...(isLoading && streamText
+      ? [
+          {
+            id: '_stream',
+            name: name.trim(),
+            greeting: streamText,
+            isStreaming: true,
+          },
+        ]
       : []),
     ...greetings.map((g) => ({ ...g, isStreaming: false })),
   ];
@@ -263,14 +299,15 @@ export default function App() {
             onChange={(e) => setName(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Enter your name"
-            disabled={loading}
+            disabled={isLoading}
+            autoFocus
           />
           <SubmitButton
             onClick={handleSubmit}
-            disabled={!name.trim() || loading}
-            $loading={loading}
+            disabled={!name.trim() || isLoading}
+            $loading={isLoading}
           >
-            {loading ? 'Thinking...' : 'Say Hello'}
+            {isLoading ? 'Thinking...' : 'Say Hello'}
           </SubmitButton>
         </InputArea>
 
