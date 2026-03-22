@@ -5,33 +5,23 @@ type: design/typography
 
 ```typography
 fonts:
-  System:
-    src: system-ui
+  DM Sans:
+    src: https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700
+  DM Mono:
+    src: https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500
 
 styles:
-  Heading:
-    font: System
+  Display:
+    font: DM Sans
     size: 40px
     weight: 600
     letterSpacing: -0.03em
     lineHeight: 1.1
-    description: Page titles, hero text
+    description: Page titles and hero text
   Body:
-    font: System
+    font: DM Sans
     size: 16px
     weight: 400
     lineHeight: 1.5
-    description: Default paragraph text
-  Label:
-    font: System
-    size: 13px
-    weight: 500
-    lineHeight: 1
-    description: Form labels, tags, badges
-  Button:
-    font: System
-    size: 15px
-    weight: 600
-    lineHeight: 1
-    description: Button text
+    description: Default reading text
 ```

@@ -4,25 +4,16 @@ type: design/color
 ---
 
 ```colors
-Background:
+Midnight:
   value: "#000000"
-  description: Page background
-Surface:
+  description: Primary background and dark surfaces
+Charcoal:
   value: "#1C1C1E"
-  description: Cards, inputs, elevated elements
-Border:
-  value: "#2C2C2E"
-  description: Dividers, subtle borders
-BorderFocus:
-  value: "#3A3A3C"
-  description: Input focus border
-Text:
+  description: Elevated surfaces and containers
+Snow:
   value: "#F5F5F7"
-  description: Primary text
-Secondary:
+  description: Primary text and foreground elements
+Smoke:
   value: "#86868B"
-  description: Subtitles, secondary text
-Tertiary:
-  value: "#48484A"
-  description: Placeholders, faint text
+  description: Secondary text and supporting content
 ```
