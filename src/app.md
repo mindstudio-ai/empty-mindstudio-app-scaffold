@@ -1,5 +1,5 @@
 ---
-name: Hello World
+name: Hello World Scaffold
 description: A simple starter app that greets people using AI.
 version: 1
 ---
