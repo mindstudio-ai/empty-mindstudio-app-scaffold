@@ -17,3 +17,5 @@ styles:
     lineHeight: X.X
     description: Lorem ipsum
 ```
+
+// @scaffold-sentinel remove on write

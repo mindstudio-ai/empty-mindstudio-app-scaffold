@@ -1,7 +1,6 @@
 ---
 name: Hello World Scaffold
 description: A simple starter app that greets people using AI.
-version: 1
 ---
 
 # Hello World
@@ -29,3 +28,5 @@ The AI prompt should ask for exactly one sentence — warm, creative, personaliz
 ~~~
 
 Error messages should be friendly and human. Never show technical details to the user.
+
+// @scaffold-sentinel remove on write
