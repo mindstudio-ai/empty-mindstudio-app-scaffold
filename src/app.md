@@ -3,6 +3,8 @@ name: Hello World Scaffold
 description: A simple starter app that greets people using AI.
 ---
 
+![App Logo](https://i.mscdn.ai/images/a47f3f3a-a1fa-41ca-8de3-e415452b4611_1739379254036.png)
+
 # Hello World
 
 A simple app that greets people. The user enters their name, the app generates a creative, personalized greeting using AI, and saves it so they can see all their past greetings.
