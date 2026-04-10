@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback } from 'react';
-import useSWR, { mutate } from 'swr';
+import { create } from 'zustand';
 import api from './api';
 import styles from './App.module.css';
 
@@ -10,50 +10,19 @@ interface Greeting {
 }
 
 // ---------------------------------------------------------------------------
-// Data fetching with SWR
+// Global store
 // ---------------------------------------------------------------------------
 
-const GREETINGS_KEY = 'greetings';
-
-function useGreetings() {
-  return useSWR<Greeting[]>(GREETINGS_KEY, null, {
-    fallbackData: [],
-    revalidateOnFocus: false,
-  });
+interface Store {
+  greetings: Greeting[];
+  addGreeting: (greeting: Greeting) => void;
 }
 
-function useCreateGreeting() {
-  const [streamText, setStreamText] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const trigger = useCallback(async (name: string) => {
-    setIsLoading(true);
-    setStreamText('');
-    try {
-      const result = (await api.helloWorld(
-        { name },
-        {
-          stream: true,
-          onToken: (text: string) => setStreamText(text),
-        },
-      )) as Greeting;
-
-      await mutate<Greeting[]>(
-        GREETINGS_KEY,
-        (prev) => [result, ...(prev ?? [])],
-        { revalidate: false },
-      );
-
-      setStreamText('');
-      return result;
-    } finally {
-      setIsLoading(false);
-      setStreamText('');
-    }
-  }, []);
-
-  return { trigger, streamText, isLoading };
-}
+const useStore = create<Store>((set) => ({
+  greetings: [],
+  addGreeting: (greeting) =>
+    set((state) => ({ greetings: [greeting, ...state.greetings] })),
+}));
 
 // ---------------------------------------------------------------------------
 // App
@@ -61,18 +30,36 @@ function useCreateGreeting() {
 
 export default function App() {
   const [name, setName] = useState('');
+  const [streamText, setStreamText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { data: greetings = [] } = useGreetings();
-  const { trigger, streamText, isLoading } = useCreateGreeting();
+  const greetings = useStore((s) => s.greetings);
+  const addGreeting = useStore((s) => s.addGreeting);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     const trimmed = name.trim();
     if (!trimmed || isLoading) return;
 
-    await trigger(trimmed);
-    setName('');
-    inputRef.current?.focus();
-  };
+    setIsLoading(true);
+    setStreamText('');
+    try {
+      const result = (await api.helloWorld(
+        { name: trimmed },
+        {
+          stream: true,
+          onToken: (text: string) => setStreamText(text),
+        },
+      )) as Greeting;
+
+      addGreeting(result);
+      setStreamText('');
+      setName('');
+      inputRef.current?.focus();
+    } finally {
+      setIsLoading(false);
+      setStreamText('');
+    }
+  }, [name, isLoading, addGreeting]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') handleSubmit();
