@@ -1,4 +1,4 @@
-import { MindStudioAgent } from '@mindstudio-ai/agent';
+import { mindstudio } from '@mindstudio-ai/agent';
 import { Greetings } from './tables/default';
 
 export interface HelloWorldInput {
@@ -14,9 +14,7 @@ export interface HelloWorldOutput {
 export async function helloWorld(
   input: HelloWorldInput,
 ): Promise<HelloWorldOutput> {
-  const agent = new MindStudioAgent();
-
-  const { content } = await agent.generateText({
+  const { content } = await mindstudio.generateText({
     message: `Write a single warm, creative, one-sentence greeting for someone named "${input.name}". Be friendly and imaginative. Reply with only the greeting, nothing else.`,
   });
 
