@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@mindstudio-ai/interface": "^0.1.3",
+    "@mindstudio-ai/interface": "^0.1.4",
     "gsap": "^3.12.7",
     "motion": "^12.12.1",
     "react": "^19.2.5",
