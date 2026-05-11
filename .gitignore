@@ -7,4 +7,6 @@ node_modules/
 .remy-stats.json
 .remy-design-sample.json
 .remy-plan.md
+.remy-brand.json
+.remy-brand.cache.json
 .project-status.json
