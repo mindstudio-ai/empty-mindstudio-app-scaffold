@@ -8,7 +8,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@mindstudio-ai/agent": "^0.1.89"
+    "@mindstudio-ai/agent": "^0.1.90"
   },
   "devDependencies": {
     "@types/node": "^25.0.0",
