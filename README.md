@@ -37,6 +37,10 @@ dist/
 
 Edit files in `dist/` — changes take effect immediately. The platform transpiles methods per-request and the frontend uses Vite HMR.
 
+## Crash reporting
+
+Frontend crashes are reported to the platform dashboard automatically, and `src/main.tsx` is wired so an error boundary can't hide them: React hands a caught error to `onCaughtError`, which by default only logs to the console, so the root hooks there are what make render crashes visible. Keep them wired on any additional root you create, and use `telemetry.captureException(err)` for errors you catch and handle yourself.
+
 ## Deploying
 
 ```bash

@@ -1,9 +1,8 @@
-// Side-effect import: loads the platform SDK so it can auto-init analytics
-// (pageviews, presence) and uncaught-error reporting on startup. Required
-// even if you don't call SDK methods directly — without this, Vite tree-
-// shakes the package out of the bundle and telemetry never starts. Do not
-// remove unless you intentionally want to disable platform telemetry.
-import '@mindstudio-ai/interface';
+// Importing the platform SDK auto-inits analytics (pageviews, presence) and
+// window-level error reporting on startup. Keep this import even if you never
+// call the SDK directly — without it, Vite tree-shakes the package out of the
+// bundle and telemetry never starts.
+import { telemetry } from '@mindstudio-ai/interface';
 
 import { Component, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -41,7 +40,16 @@ class ErrorBoundary extends Component<
   }
 }
 
-createRoot(document.getElementById('root')!).render(
+// The root hooks are what make crashes visible. React hands an error its
+// boundaries caught to `onCaughtError`, which does nothing but log to the
+// console — so the boundary below, left to itself, would hide every render
+// crash from the platform. Both hooks report as UNHANDLED: this fallback is a
+// stack trace, not a recovery. A boundary that renders something the user can
+// carry on from should say so with `reactErrorHandler({ handled: true })`.
+createRoot(document.getElementById('root')!, {
+  onUncaughtError: telemetry.reactErrorHandler(),
+  onCaughtError: telemetry.reactErrorHandler(),
+}).render(
   <ErrorBoundary>
     <App />
   </ErrorBoundary>,
