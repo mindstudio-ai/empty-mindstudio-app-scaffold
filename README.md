@@ -1,50 +1,7 @@
-# Hello World — MindStudio App
+# Hello World — Remy app scaffold
 
-A minimal starter app that generates creative AI greetings. Demonstrates the core MindStudio app lifecycle: spec, method, table, and web interface.
+**This repository is archived and no longer updated.**
 
-## What it does
+The starter app every new [Remy](https://goremy.ai) app begins from now lives in the Remy platform's own repository, at `templates/app-scaffold`, and new apps are copied from there. Apps already created from this repository are unaffected: each one has its own copy.
 
-Enter a name, get a unique AI-generated greeting. Greetings stream in real-time and are saved to a database.
-
-## Structure
-
-```
-mindstudio.json              ← manifest
-src/
-  app.md                     ← spec (what the app does)
-  interfaces/
-    @brand/visual.md         ← design tokens (colors, typography, spacing)
-    @brand/voice.md          ← tone and terminology
-    web.md                   ← web interface spec
-dist/
-  methods/
-    src/
-      helloWorld.ts          ← backend method (AI greeting + db write)
-      tables/default.ts      ← greetings table definition
-    package.json
-  interfaces/
-    web/                     ← React frontend (Vite + styled-components)
-```
-
-## Stack
-
-- **Backend:** TypeScript method using `@mindstudio-ai/agent` for AI text generation and database access
-- **Frontend:** React + Vite + styled-components + framer-motion
-- **Database:** SQLite (managed by the platform, defined as TypeScript interfaces)
-- **AI:** MindStudio SDK — no API keys to configure
-
-## Developing
-
-Edit files in `dist/` — changes take effect immediately. The platform transpiles methods per-request and the frontend uses Vite HMR.
-
-## Crash reporting
-
-Frontend crashes are reported to the platform dashboard automatically, and `src/main.tsx` is wired so an error boundary can't hide them: React hands a caught error to `onCaughtError`, which by default only logs to the console, so the root hooks there are what make render crashes visible. Keep them wired on any additional root you create, and use `telemetry.captureException(err)` for errors you catch and handle yourself.
-
-## Deploying
-
-```bash
-git push origin main
-```
-
-The platform builds and deploys automatically.
+The history here is kept as a record of how the scaffold got to where it is.
